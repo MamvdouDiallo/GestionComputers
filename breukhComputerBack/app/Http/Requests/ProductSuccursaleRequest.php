@@ -11,7 +11,7 @@ class ProductSuccursaleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class ProductSuccursaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "libelle" => 'required|string|min:3',
+            'code' => 'required | string',
+            'reduction' => 'number',
+            'image' => 'required',
         ];
     }
 }

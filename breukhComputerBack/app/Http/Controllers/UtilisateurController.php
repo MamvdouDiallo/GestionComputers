@@ -38,8 +38,10 @@ class UtilisateurController extends Controller
      */
     public function store(UtilisateurRequest $request)
     {
+       
         $data = $request->except('password');
         $data['password'] = Hash::make($request->input('password'));
+       // return($data);
         $utilisateur = Utilisateur::create($data);
         return $this->success(new UtilisateurResource($utilisateur));
     }

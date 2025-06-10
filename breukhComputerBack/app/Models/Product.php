@@ -37,7 +37,6 @@ class Product extends Model
         return $this->belongsToMany(Succursale::class, 'product_succursales')
             ->withPivot("quantite", "prixDetail", "prixEnGros");
     }
-
     public function productSuccursales(): HasMany
     {
         return $this->hasMany(ProductSuccursale::class);

@@ -59,9 +59,9 @@ Route::apiResource('unites', UniteController::class);
 
 Route::apiResource('amis', AmiController::class);
 
+Route::apiResource('products', ProductController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('products', ProductController::class);
 });
 
 

@@ -16,6 +16,8 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductResource2;
 use App\Http\Resources\ProductResource21;
 use App\Http\Resources\ProductSuccursaleResource;
+use Illuminate\Support\Facades\Storage;
+use Nette\Utils\Random;
 
 class ProductController extends Controller
 {
@@ -32,9 +34,14 @@ class ProductController extends Controller
             ->whereHas('productSuccursales', function ($query) use ($votreId) {
                 $query->where('succursale_id', $votreId);
             })->get();
+
+
+
         $succursale = ProductSuccursale::where('succursale_id', $votreId)
             ->where('product_id', $product[0]->id)
             ->first();
+
+
         $product->each(function ($product) use ($succursale) {
             $product->details = $succursale;
         });
@@ -98,6 +105,24 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
 
+        $image_64 = $request->photo; //your base64 encoded data
+
+        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];   // .jpg .png .pdf
+
+
+        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+
+        // find substring fro replace here eg: data:image/png;base64,
+
+        $image = str_replace($replace, '', $image_64);
+
+        $image = str_replace(' ', '+', $image);
+
+        $imageName = (10) . '.' . $extension;
+
+        Storage::disk('public')->put($imageName, base64_decode($image));
+
+        return;
         $response = null;
         DB::beginTransaction();
         try {
@@ -152,8 +177,6 @@ class ProductController extends Controller
             DB::rollback();
             $response = ['error' => $e->getMessage()];
         }
-
-
         if (isset($response['error'])) {
             return $this->error(500, $response['error']);
         } else {
